@@ -12,32 +12,27 @@ export function Providers({ children }: { children: React.ReactNode }) {
             config={{
                 appearance: {
                     theme: "dark",
-                    accentColor: "#FFFFFF",
+                    accentColor: "#9fd843",
                 },
                 embeddedWallets: {
                     ethereum: {
                         createOnLogin: "users-without-wallets",
                     }
                 },
-                defaultChain: {
-                    id: 102036,
-                    name: "Creditcoin USC Testnet 2",
-                    network: "usc-testnet-2",
-                    nativeCurrency: {
-                        name: "tCTC",
-                        symbol: "tCTC",
-                        decimals: 18,
-                    },
-                    rpcUrls: {
-                        default: {
-                            http: ["https://rpc.usc-testnet2.creditcoin.network"],
-                        },
-                        public: {
-                            http: ["https://rpc.usc-testnet2.creditcoin.network"],
-                        },
-                    },
-                },
                 supportedChains: [
+                    {
+                        id: 10143,
+                        name: 'Monad Testnet',
+                        nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 },
+                        rpcUrls: {
+                            default: { http: ['https://testnet-rpc.monad.xyz'] },
+                            public: { http: ['https://testnet-rpc.monad.xyz'] },
+                        },
+                        blockExplorers: {
+                            default: { name: 'MonadExplorer', url: 'https://testnet.monadexplorer.com' },
+                        },
+                        testnet: true,
+                    },
                     {
                         id: 102036,
                         name: "Creditcoin USC Testnet 2",
@@ -51,7 +46,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
                             default: { name: "Explorer", url: "https://explorer.usc-testnet2.creditcoin.network" },
                         },
                     }
-                ]
+                ],
+                loginMethods: ['wallet', 'email', 'google'],
             }}
         >
             {children}

@@ -17,7 +17,7 @@ export default function Home() {
           <div className="w-10 h-10 bg-white flex items-center justify-center rounded-sm">
             <Box className="w-5 h-5 text-black" />
           </div>
-          <h1 className="text-xl font-bold uppercase tracking-tighter">Syndicate_Equip</h1>
+          <h1 className="text-xl font-bold uppercase tracking-tighter">Obolus_Equip</h1>
         </div>
 
         <div className="flex items-center gap-6">
@@ -53,7 +53,7 @@ export default function Home() {
 
       <div className="mb-12">
         <h2 className="text-4xl font-black uppercase tracking-tighter mb-2">Available_Modules</h2>
-        <p className="text-white/40 text-sm uppercase tracking-widest">Equipping the next generation of Creditcoin validators.</p>
+        <p className="text-white/40 text-sm uppercase tracking-widest">Equipping the next generation of Monad validators.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -96,7 +96,7 @@ export default function Home() {
       </div>
 
       <footer className="mt-24 pt-12 border-t border-white/10 opacity-20 text-[10px] uppercase font-bold tracking-widest text-center">
-        Syndicate Hardware © 2026 // Integrated with Polaris Protocol
+        Obolus Hardware © 2026 // Integrated with Obolus Protocol
       </footer>
     </div>
   );
