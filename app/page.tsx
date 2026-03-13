@@ -4,11 +4,12 @@ import { PRODUCTS } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
 import { ShoppingCart, Zap, Box, ArrowRight, Wallet } from "lucide-react";
 import Link from "next/link";
-import { usePrivy } from "@privy-io/react-auth";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 export default function Home() {
   const { addToCart, items } = useCart();
-  const { login, authenticated, user, logout } = usePrivy();
+  const { isConnected } = useAccount();
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
@@ -21,25 +22,68 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-6">
-          {!authenticated ? (
-            <button
-              onClick={login}
-              className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all flex items-center gap-2"
-            >
-              <Wallet className="w-3.5 h-3.5" /> Connect_Identity
-            </button>
-          ) : (
-            <button
-              onClick={logout}
-              className="group flex flex-col items-end"
-            >
-              <span className="text-[10px] font-black uppercase tracking-tighter group-hover:text-red-500 transition-colors">
-                {user?.wallet?.address.slice(0, 6)}...{user?.wallet?.address.slice(-4)}
-              </span>
-              <span className="text-[8px] text-white/20 uppercase font-bold tracking-widest">Active_Session</span>
-            </button>
-          )}
+          <ConnectButton.Custom>
+            {({
+              account,
+              chain,
+              openAccountModal,
+              openChainModal,
+              openConnectModal,
+              mounted,
+            }) => {
+              const ready = mounted;
+              const connected = ready && account && chain;
 
+              return (
+                <div
+                  {...(!ready && {
+                    'aria-hidden': true,
+                    'style': {
+                      opacity: 0,
+                      pointerEvents: 'none',
+                      userSelect: 'none',
+                    },
+                  })}
+                >
+                  {(() => {
+                    if (!connected) {
+                      return (
+                        <button
+                          onClick={openConnectModal}
+                          className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all flex items-center gap-2"
+                        >
+                          <Wallet className="w-3.5 h-3.5" /> Connect_Identity
+                        </button>
+                      );
+                    }
+
+                    if (chain.unsupported) {
+                      return (
+                        <button
+                          onClick={openChainModal}
+                          className="text-[10px] font-bold uppercase tracking-widest text-red-500 hover:text-red-400 transition-all flex items-center gap-2"
+                        >
+                          Wrong_Network
+                        </button>
+                      );
+                    }
+
+                    return (
+                      <button
+                        onClick={openAccountModal}
+                        className="group flex flex-col items-end"
+                      >
+                        <span className="text-[10px] font-black uppercase tracking-tighter group-hover:text-primary transition-colors">
+                          {account.displayName}
+                        </span>
+                        <span className="text-[8px] text-white/20 uppercase font-bold tracking-widest">Active_Session</span>
+                      </button>
+                    );
+                  })()}
+                </div>
+              );
+            }}
+          </ConnectButton.Custom>
           <Link href="/cart" className="relative p-2 hover:bg-white/5 rounded transition-all">
             <ShoppingCart className="w-5 h-5" />
             {items.length > 0 && (

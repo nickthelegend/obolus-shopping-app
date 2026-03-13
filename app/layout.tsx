@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Spend your credit with Obolus Network merchants",
 };
 
+export const dynamic = 'force-dynamic';
+
 import { CartProvider } from "@/lib/cart-context";
 import { Providers } from "@/components/providers";
 

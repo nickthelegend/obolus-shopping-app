@@ -1,68 +1,69 @@
 "use client"
 
-import type React from "react"
-import { PrivyProvider } from "@privy-io/react-auth"
+import '@rainbow-me/rainbowkit/styles.css'
+import {
+    getDefaultConfig,
+    RainbowKitProvider,
+    darkTheme,
+} from '@rainbow-me/rainbowkit'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useState, type ReactNode } from 'react'
+import { WagmiProvider } from 'wagmi'
+import { avalancheFuji, polygonAmoy } from 'wagmi/chains'
+import { defineChain } from 'viem'
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
-export function Providers({ children }: { children: React.ReactNode }) {
+const monadTestnet = defineChain({
+    id: 10143,
+    name: 'Monad Testnet',
+    nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 },
+    rpcUrls: {
+        default: { http: ['https://testnet-rpc.monad.xyz'] },
+    },
+    blockExplorers: {
+        default: { name: 'MonadExplorer', url: 'https://testnet.monadexplorer.com' },
+    },
+    testnet: true,
+})
+
+const config = getDefaultConfig({
+    appName: 'Obolus Store',
+    projectId: '1745eedb32cb0f103490b50b14761c85',
+    chains: [monadTestnet, avalancheFuji, polygonAmoy],
+    ssr: true,
+})
+
+export function Providers({ children }: { children: ReactNode }) {
+    const [queryClient] = useState(() => new QueryClient())
+
     return (
-        <PrivyProvider
-            appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || "cmkr3rc4i00iujs0cgnug0qzj"}
-            config={{
-                appearance: {
-                    theme: "dark",
-                    accentColor: "#9fd843",
-                },
-                embeddedWallets: {
-                    ethereum: {
-                        createOnLogin: "users-without-wallets",
-                    }
-                },
-                supportedChains: [
-                    {
-                        id: 10143,
-                        name: 'Monad Testnet',
-                        nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 },
-                        rpcUrls: {
-                            default: { http: ['https://testnet-rpc.monad.xyz'] },
-                            public: { http: ['https://testnet-rpc.monad.xyz'] },
-                        },
-                        blockExplorers: {
-                            default: { name: 'MonadExplorer', url: 'https://testnet.monadexplorer.com' },
-                        },
-                        testnet: true,
-                    },
-                    {
-                        id: 102036,
-                        name: "Creditcoin USC Testnet 2",
-                        network: "usc-testnet-2",
-                        nativeCurrency: { name: "tCTC", symbol: "tCTC", decimals: 18 },
-                        rpcUrls: {
-                            default: { http: ["https://rpc.usc-testnet2.creditcoin.network"] },
-                            public: { http: ["https://rpc.usc-testnet2.creditcoin.network"] },
-                        },
-                        blockExplorers: {
-                            default: { name: "Explorer", url: "https://explorer.usc-testnet2.creditcoin.network" },
-                        },
-                    }
-                ],
-                loginMethods: ['wallet', 'email', 'google'],
-            }}
-        >
-            {children}
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
-        </PrivyProvider>
+        <WagmiProvider config={config}>
+            <QueryClientProvider client={queryClient}>
+                <RainbowKitProvider
+                    theme={darkTheme({
+                        accentColor: '#9fd843',
+                        accentColorForeground: 'black',
+                        borderRadius: 'large',
+                        fontStack: 'system',
+                        overlayBlur: 'small',
+                    })}
+                >
+                    {children}
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                </RainbowKitProvider>
+            </QueryClientProvider>
+        </WagmiProvider>
     )
 }
